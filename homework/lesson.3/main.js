@@ -4,10 +4,37 @@
  */
 
 // function sum ...
+function sum1(x){
+    return function(y){
+        return function(z){
+            return x + y + z;
+        };
+    };
+}
 
-console.log(
-  sum(3)(4)(9) === 16
-);
+var testSum = sum1(3)(4)(9);
+console.log(testSum);
+
+
+function sum(a) {
+
+    var currentSum = a;
+
+    function f(b) {
+        currentSum += b;
+        return f;
+    }
+
+    f.valueOf = function() {
+        return currentSum;
+    };
+
+    return f;
+}
+
+console.log(sum(3)(4)(9));
+
+
 
 
 /*
@@ -17,7 +44,16 @@ console.log(
  */
 
 // function makeBuffer ...
+function makeBuffer(){
+    var storage = '';
 
+    return function (bufferData){
+        if(arguments.length == 0){
+            return storage;
+        }
+        storage += bufferData;
+    }
+}
 var buffer = makeBuffer();
 
 buffer('Hello');
@@ -26,7 +62,7 @@ buffer('world');
 buffer('!');
 
 console.log(
-  buffer() === 'Hello, world!'
+  buffer()
 );
 
 
