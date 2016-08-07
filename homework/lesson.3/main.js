@@ -75,6 +75,6 @@ var tree = {
 
 // function walkAndCollect ...
 
-console.log(
-  walkAndCollect(tree) === 254
-);
+//console.log(
+//  walkAndCollect(tree) === 254
+//);
