@@ -19,16 +19,18 @@
  * If you can not solve this exercise, see result here: http://jsbin.com/hanusokadu/edit?js,output
  */
 
-function getCoords(elem) {
-    var box = elem.getBoundingClientRect();
-    return {
-        top: box.top + pageYOffset,
-        left: box.left + pageXOffset
-    };
-}
+
 
 function DragAction(elem, area) {
     var self = this;
+
+    function getCoords(elem) {
+        var box = elem.getBoundingClientRect();
+        return {
+            top: box.top + pageYOffset,
+            left: box.left + pageXOffset
+        };
+    }
 
     self.elem = document.querySelector(elem);
     self.area = document.querySelector(area);
