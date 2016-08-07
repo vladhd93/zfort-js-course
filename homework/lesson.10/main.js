@@ -27,7 +27,7 @@ function getCoords(elem) {
     };
 }
 
-function dragAction(elem, area) {
+function DragAction(elem, area) {
     var self = this;
 
     self.elem = document.querySelector(elem);
@@ -85,5 +85,5 @@ function dragAction(elem, area) {
 
 }
 
-var dragCircle = new dragAction('.entity.circle', '.target .circle');
-var dragRect = new dragAction('.entity.rect', '.target .rect');
+var dragCircle = new DragAction('.entity.circle', '.target .circle');
+var dragRect = new DragAction('.entity.rect', '.target .rect');
