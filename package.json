@@ -1,0 +1,19 @@
+{
+  "name": "zfort-js-course",
+  "version": "1.0.0",
+  "description": "JavaScript course for Zfort company.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vladhd93/zfort-js-course.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vladhd93/zfort-js-course/issues"
+  },
+  "homepage": "https://github.com/vladhd93/zfort-js-course#readme"
+}
