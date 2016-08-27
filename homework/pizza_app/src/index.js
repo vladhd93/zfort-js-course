@@ -4,7 +4,6 @@ function PizzaBuilder(){
 
 PizzaBuilder.prototype.renderSidebar = function(data){
     window.onload = function () {
-
             var xhr = new XMLHttpRequest();
             xhr.open("GET", data, true);
             xhr.onreadystatechange = function () {
