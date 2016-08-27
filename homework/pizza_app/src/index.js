@@ -1,26 +1,23 @@
 function PizzaBuilder(){
-
+    self.data = null;
 }
 
 PizzaBuilder.prototype.renderSidebar = function(data){
     window.onload = function () {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", data, true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {
-                        self.dataObj += xhr.responseText;
-                    }
-                }
-            };
-            xhr.send();
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", data, true);
+        xhr.onreadystatechange = function () {
+
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                self.data = JSON.parse(xhr.responseText);
+                document.querySelector('.ingredients').innerHTML = self.data['data'][0].name;
+            }
+        };
+        xhr.send();
     };
-
-    alert(self.dataObj[0]);
-
 };
-function Table(addBtn, basket, itemCount) {
 
+function Table(addBtn, basket, itemCount) {
     self.addBtn = document.querySelector(addBtn);
     self.basket = document.querySelector(basket);
     self.itemCount = document.querySelector(itemCount);
@@ -105,4 +102,4 @@ table.removeItem();
 table.updateItemCount();
 var pizzaBuilder = new PizzaBuilder();
 pizzaBuilder.renderSidebar('public/config.json');
-
+console.log(self);
