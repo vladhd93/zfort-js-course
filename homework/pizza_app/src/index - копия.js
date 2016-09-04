@@ -1,5 +1,6 @@
-function PizzaBuilder(){
+function PizzaBuilder(pizzaList){
     this.data = null;
+    this.pizzaList = document.querySelector(pizzaList);
 }
 
 PizzaBuilder.prototype.renderSidebar = function(list,data){
@@ -7,6 +8,7 @@ PizzaBuilder.prototype.renderSidebar = function(list,data){
     this.list = document.querySelector(list);
     function renderSidebar(SelectedList,parsedData){
         var dataObj = parsedData['data'];
+
         for(var i = 1; i < dataObj.length;i++){
             var template = `
             <li data-name="${dataObj[i].name}" data-price="${dataObj[i].price}"><img src="${dataObj[i].src}">
@@ -14,16 +16,42 @@ PizzaBuilder.prototype.renderSidebar = function(list,data){
             SelectedList.innerHTML += template;
         }
     }
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", data, true);
-    xhr.onreadystatechange =()=> {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            this.data = JSON.parse(xhr.responseText);
-            renderSidebar(this.list,this.data);
-        }
-    };
-    xhr.send();
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", data, true);
+        xhr.onreadystatechange =()=> {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                this.data = JSON.parse(xhr.responseText);
+                renderSidebar(this.list,this.data);
+            }
+        };
+
+        xhr.send();
+
 };
+
+PizzaBuilder.prototype.addEmptyPizza = function(){
+    var _self = this;
+
+    function renderPizzaHandler() {
+        return function () {
+            var pizzaTemplate = `<li class="pizza-item">
+
+                               <button class="select-num">${_self.currentIndex}</button>
+                               </td>
+                               <td class="ingredients"></td>
+                               <td class="total" data-price="40">40</td>
+                               <td>
+                               <button class="remove">x</button>
+
+                           </li>`;
+            _self.pizzaList.innerHTML += rowTemplate;
+
+        };
+    }
+};
+
+
+
 
 function Table(addBtn, basket, itemCount,numBtn,ingrList,totalCell) {
     this.addBtn = document.querySelector(addBtn);
@@ -52,8 +80,8 @@ Table.prototype.renderRow = function () {
                            </tr>`;
             _self.basket.innerHTML += rowTemplate;
             _self.currentIndex += 1;
-            _self.checkCurrentIndex();
-            _self.updateItemCount();
+             _self.checkCurrentIndex();
+             _self.updateItemCount();
             _self.setCurrentItem();
         };
     }
@@ -67,11 +95,16 @@ Table.prototype.removeItem = function (event) {
         if (event.target.className == 'remove') {
             var removeRow = event.target.parentNode.parentNode;
             _self.basket.removeChild(removeRow);
-            _self.checkCurrentIndex();
+           _self.checkCurrentIndex();
             _self.setCurrentItem();
+
         }
     }
     document.querySelector('body').addEventListener('click', removeSelfHandler);
+};
+
+Table.prototype.updateTable = function () {
+
 };
 
 Table.prototype.setCurrentItem = function () {
@@ -86,6 +119,7 @@ Table.prototype.setCurrentItem = function () {
     for(var i = 0; i < btns.length;i++){
         btns[i].addEventListener('click',clickHandler);
     }
+
 };
 
 Table.prototype.updateItemCost = function () {
@@ -123,18 +157,21 @@ Table.prototype.checkCurrentIndex = function () {
     }
 };
 
+
+
+
 Table.prototype.updateItemCount = function () {
     var itemsArray = [].slice.call(document.querySelectorAll(".orders tr .select-num"));
     this.itemCount.innerHTML = itemsArray.length;
 };
 
-var table = new Table('.add-pizza', '.basket tbody', '.num','.select-num','.ingredients-list','.total');
+var table = new Table('.add-pizza','.basket tbody', '.num','.select-num','.ingredients-list','.total');
 table.checkCurrentIndex();
 table.renderRow();
 table.removeItem();
-table.updateItemCount();
 table.updateItemCost();
 table.setCurrentItem();
+table.updateItemCount();
 var pizzaBuilder = new PizzaBuilder();
 pizzaBuilder.renderSidebar('.ingredients-list','public/config.json');
-
+pizzaBuilder.addEmptyPizza();

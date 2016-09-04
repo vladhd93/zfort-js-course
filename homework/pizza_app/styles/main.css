@@ -1,5 +1,8 @@
 
-
+table{
+  border-spacing: 0;
+  border-collapse: collapse;
+}
 ul {
   margin: 0;
   padding: 0;
@@ -120,4 +123,30 @@ ul {
 .basket .ingredient .delete {
   color: #666;
   margin: 0 0 0 2px;
+}
+
+.ingredients-list li{
+  cursor: pointer;
+}
+
+tr.selected td{
+ background: rgba(184,134,11,.25);
+}
+
+tr.selected .total{
+  font-weight: 700;
+  color: chocolate;
+  font-size: 18px;
+}
+
+.pizza-num{
+  font-weight: 700;
+  color: chocolate;
+  font-size: 25px;
+}
+
+strong.num{
+  font-weight: 700;
+  color: chocolate;
+  font-size: 25px;
 }

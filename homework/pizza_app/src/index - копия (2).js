@@ -1,5 +1,6 @@
 function PizzaBuilder(){
     this.data = null;
+
 }
 
 PizzaBuilder.prototype.renderSidebar = function(list,data){
@@ -7,6 +8,7 @@ PizzaBuilder.prototype.renderSidebar = function(list,data){
     this.list = document.querySelector(list);
     function renderSidebar(SelectedList,parsedData){
         var dataObj = parsedData['data'];
+
         for(var i = 1; i < dataObj.length;i++){
             var template = `
             <li data-name="${dataObj[i].name}" data-price="${dataObj[i].price}"><img src="${dataObj[i].src}">
@@ -14,6 +16,7 @@ PizzaBuilder.prototype.renderSidebar = function(list,data){
             SelectedList.innerHTML += template;
         }
     }
+
     var xhr = new XMLHttpRequest();
     xhr.open("GET", data, true);
     xhr.onreadystatechange =()=> {
@@ -22,8 +25,15 @@ PizzaBuilder.prototype.renderSidebar = function(list,data){
             renderSidebar(this.list,this.data);
         }
     };
+
     xhr.send();
+
 };
+
+
+
+
+
 
 function Table(addBtn, basket, itemCount,numBtn,ingrList,totalCell) {
     this.addBtn = document.querySelector(addBtn);
@@ -74,6 +84,8 @@ Table.prototype.removeItem = function (event) {
     document.querySelector('body').addEventListener('click', removeSelfHandler);
 };
 
+
+
 Table.prototype.setCurrentItem = function () {
     var btns = [].slice.call(document.querySelectorAll('.select-num'));
     function clickHandler(){
@@ -86,6 +98,7 @@ Table.prototype.setCurrentItem = function () {
     for(var i = 0; i < btns.length;i++){
         btns[i].addEventListener('click',clickHandler);
     }
+
 };
 
 Table.prototype.updateItemCost = function () {
@@ -102,6 +115,7 @@ Table.prototype.updateItemCost = function () {
             currentTotalCost.dataset.price = parseInt(currentTotalCost.dataset.price) + cost;
             currentTotalCost.innerHTML = currentTotalCost.dataset.price;
         }
+
     }
     this.ingrList.addEventListener('click',listHandler);
 };
@@ -123,6 +137,9 @@ Table.prototype.checkCurrentIndex = function () {
     }
 };
 
+
+
+
 Table.prototype.updateItemCount = function () {
     var itemsArray = [].slice.call(document.querySelectorAll(".orders tr .select-num"));
     this.itemCount.innerHTML = itemsArray.length;
@@ -135,6 +152,7 @@ table.removeItem();
 table.updateItemCount();
 table.updateItemCost();
 table.setCurrentItem();
+
 var pizzaBuilder = new PizzaBuilder();
 pizzaBuilder.renderSidebar('.ingredients-list','public/config.json');
 
