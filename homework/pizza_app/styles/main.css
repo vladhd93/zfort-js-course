@@ -71,7 +71,8 @@ ul {
   list-style: none;
   font-size: 0;
   position: relative;
-  transition: 200ms transform ease-in-out;
+  transition: 800ms margin;
+  width: 999999999px;
 }
 .list li {
   display: inline-block;
@@ -84,6 +85,7 @@ ul {
 
 .pizza-item {
   position: relative;
+  transition: all .5s;
 }
 .pizza-item ul li {
   position: absolute;
@@ -145,8 +147,22 @@ tr.selected .total{
   font-size: 25px;
 }
 
-strong.num{
+.sum-text{
+  font-weight: 700;
+  color: chocolate;
+  font-size:18px;
+}
+
+
+strong.num,
+.pizza-index{
   font-weight: 700;
   color: chocolate;
   font-size: 25px;
+}
+
+.sum-price{
+  font-weight: 700;
+  color: brown;
+  font-size: 22px;
 }
