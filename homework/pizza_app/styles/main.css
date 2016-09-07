@@ -166,3 +166,27 @@ strong.num,
   color: brown;
   font-size: 22px;
 }
+
+.ingredient{
+  position: absolute;
+  width: 60px;
+  height: 60px;
+}
+
+input[type='number']{
+  width: 100px;
+}
+
+.ingredients-item{
+  width: 47%;
+  display: inline-block;
+  padding: 10px 0;
+  border: 1px solid #777;
+  margin:0 10px 10px 0;
+}
+
+
+.ingredients-item img{
+  width: 25px;
+  height: 25px;
+}
