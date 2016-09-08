@@ -108,11 +108,10 @@ Table.prototype.renderRow = function () {
             _self.updateItemCount();
             _self.setCurrentItem();
             _self.sumPrice('.total', '.sum-price');
-
         };
     }
-    _self.addBtn.addEventListener("click", renderRowHandler());
 
+    _self.addBtn.addEventListener("click", renderRowHandler());
 };
 
 Table.prototype.removeItem = function () {
@@ -133,9 +132,11 @@ Table.prototype.removeItem = function () {
             if(removeRow.classList.contains('selected')){
                 _self.basket.children[parseInt(currentIndex) - 1].classList.add('selected');
             }
+
             _self.sumPrice('.total', '.sum-price');
         }
     }
+
     document.querySelector('body').addEventListener('click', removeSelfHandler);
 };
 
@@ -175,6 +176,39 @@ Table.prototype.sumPrice = function (sumArr, cell) {
     displaySumCell.innerHTML = sum;
 };
 
+Table.prototype.ingradientsOptions = function () {
+  //var salamiItem = {
+  //    plus:document.querySelector('.ingredients-item.salami .plus'),
+  //    minus: document.querySelector('.ingredients-item.salami .minus'),
+  //    input: document.querySelector('.ingredients-item.salami input')
+  //};
+  //  var itemsArr = [];
+  //  var salamiItem = document.querySelector(".ingredients-item.salami"),
+  //      salamiItemInput = document.querySelector(".ingredients-item.salami .input"),
+  //      tomatoItem = document.querySelector(".ingredients-item.tomato"),
+  //      tomatoItemInput = document.querySelector(".ingredients-item.tomato .input"),
+  //      baconItem = document.querySelector(".ingredients-item.bacon"),
+  //      baconItemInput = document.querySelector(".ingredients-item.bacon .input"),
+  //      cheezeItem = document.querySelector(".ingredients-item.cheeze"),
+  //      cheezeItemInput = document.querySelector(".ingredients-item.cheeze .input"),
+  //      greenItem = document.querySelector(".ingredients-item.green"),
+  //      greenItemInput = document.querySelector(".ingredients-item.green .input");
+    function clickActionHandler(event){
+        var target = event.target;
+        if(target.classList.contains("plus")){
+            target.nextElementSibling.value++;
+        }
+        if(target.classList.contains("minus")){
+            target.previousElementSibling.value--;
+        }
+    }
+
+
+
+
+    
+    document.querySelector('.orders').addEventListener('click',clickActionHandler);
+};
 
 
 Table.prototype.updateItemCost = function () {
@@ -240,40 +274,10 @@ Table.prototype.setActiveFirst = function (pizza,row) {
     rowActive[0].classList.add('selected');
 };
 
-Table.prototype.ingradientsOptions = function () {
-    //var salamiItem = {
-    //    plus:document.querySelector('.ingredients-item.salami .plus'),
-    //    minus: document.querySelector('.ingredients-item.salami .minus'),
-    //    input: document.querySelector('.ingredients-item.salami input')
-    //};
-    //  var itemsArr = [];
-    //  var salamiItem = document.querySelector(".ingredients-item.salami"),
-    //      salamiItemInput = document.querySelector(".ingredients-item.salami .input"),
-    //      tomatoItem = document.querySelector(".ingredients-item.tomato"),
-    //      tomatoItemInput = document.querySelector(".ingredients-item.tomato .input"),
-    //      baconItem = document.querySelector(".ingredients-item.bacon"),
-    //      baconItemInput = document.querySelector(".ingredients-item.bacon .input"),
-    //      cheezeItem = document.querySelector(".ingredients-item.cheeze"),
-    //      cheezeItemInput = document.querySelector(".ingredients-item.cheeze .input"),
-    //      greenItem = document.querySelector(".ingredients-item.green"),
-    //      greenItemInput = document.querySelector(".ingredients-item.green .input");
-    function clickActionHandler(event){
-        var target = event.target;
-        console.log(target);
-            if(target.classList.contains("plus")){
-                target.nextElementSibling.value++;
-            }
-            if(target.classList.contains("minus")){
-                target.previousElementSibling.value--;
-            }
 
-    }
-    document.querySelector('.orders').addEventListener('click',clickActionHandler);
-};
 
 var table = new Table('.add-pizza', '.basket tbody', '.num', '.select-num', '.ingredients-list', '.total', '.list', '.pizza-item');
 table.checkCurrentIndex();
-table.setActiveFirst('.pizza-item','.orders tr');
 table.renderRow();
 table.removeItem();
 table.updateItemCount();
@@ -281,7 +285,7 @@ table.updateItemCost();
 table.setCurrentItem();
 table.sumPrice('.total', '.sum-price');
 table.ingradientsOptions();
-
+table.setActiveFirst('.pizza-item','.orders tr');
 var pizzaBuilder = new PizzaBuilder();
 pizzaBuilder.renderSidebar('.ingredients-list', 'public/config.json');
 
