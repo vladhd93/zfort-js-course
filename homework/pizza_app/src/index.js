@@ -54,36 +54,37 @@ Table.prototype.renderRow = function () {
 
     function renderRowHandler() {
         return function () {
-            var rowTemplate = `<tr>
+            var newRow = document.createElement('tr');
+            var rowTemplate = `
                            <td class="num">
                                <button class="select-num">${_self.currentIndex}</button>
                                </td>
                                <td class="ingredients">
-            <div class="ingredients-item salami">
+            <div class="ingredients-item salami" data-type="salami">
               <span class="name">Salami <img src="images/salami.svg" alt=""></span>
               <button class="plus">+</button>
               <input type='number' class="input">
               <button class="minus">-</button>
             </div>
-            <div class="ingredients-item tomato">
+            <div class="ingredients-item tomato" data-type="tomato">
               <span class="name">tomato <img src="images/tomato.svg" alt=""></span>
               <button class="plus">+</button>
               <input type='number' class="input">
               <button class="minus">-</button>
             </div>
-            <div class="ingredients-item bacon">
+            <div class="ingredients-item bacon" data-type="bacon">
               <span class="name">bacon <img src="images/bacon.svg" alt=""></span>
               <button class="plus">+</button>
               <input type='number' class="input">
               <button class="minus">-</button>
             </div>
-            <div class="ingredients-item cheeze">
+            <div class="ingredients-item cheeze" data-type="cheeze">
               <span class="name">cheeze <img src="images/cheeze.svg" alt=""></span>
               <button class="plus">+</button>
               <input type='number' class="input">
               <button class="minus">-</button>
             </div>
-            <div class="ingredients-item green">
+            <div class="ingredients-item green" data-type="green">
               <span class="name">green <img src="images/green.svg" alt=""></span>
               <button class="plus">+</button>
               <input type='number' class="input">
@@ -94,15 +95,16 @@ Table.prototype.renderRow = function () {
                                <td>
                                <button class="remove">x</button>
                            </td>
-                           </tr>`;
+                           `;
             var pizzaTemplate = `
                 <li class="pizza-item">
                     <span class="pizza-index">${_self.currentIndex}</span>
                     <img src="images/pizza.svg" width="300" height="300" alt="" title="">
                 </li>
             `;
+            newRow.innerHTML = rowTemplate;
+            _self.basket.appendChild(newRow);
             _self.pizzaList.innerHTML += pizzaTemplate;
-            _self.basket.innerHTML += rowTemplate;
             _self.currentIndex += 1;
             _self.checkCurrentIndex();
             _self.updateItemCount();
@@ -194,8 +196,7 @@ Table.prototype.updateItemCost = function () {
             newImg.classList.add('ingredient');
             document.querySelector('.pizza-item.active').appendChild(newImg);
             var name = target.parentNode.dataset.name;
-            console.log(name);
-            var input = document.querySelector('.ingredients-item'+'.'+name+' .input');
+            var input = document.querySelector('.selected .ingredients-item'+'.'+name+' .input');
             input.value++;
         }
         var li = target.closest('li');
@@ -257,17 +258,31 @@ Table.prototype.ingradientsOptions = function () {
     //      cheezeItemInput = document.querySelector(".ingredients-item.cheeze .input"),
     //      greenItem = document.querySelector(".ingredients-item.green"),
     //      greenItemInput = document.querySelector(".ingredients-item.green .input");
-    function clickActionHandler(event){
-        var target = event.target;
-        console.log(target);
-            if(target.classList.contains("plus")){
-                target.nextElementSibling.value++;
-            }
-            if(target.classList.contains("minus")){
-                target.previousElementSibling.value--;
-            }
 
+    function clickActionHandler(event){
+        function getRandom(min, max) {
+            return Math.round(Math.random() * (max - min) + min);
+        }
+        var target = event.target;
+       if(target.closest('.selected')){
+           if(target.classList.contains("plus")){
+               target.nextElementSibling.value++;
+               var type = target.closest('.ingredients-item').dataset.type;
+               var newImg = document.createElement('img');
+               newImg.src ='images/'+type+'.svg';
+               newImg.style.top = getRandom(25, 240) + "px";
+               newImg.style.left = getRandom(25, 240) + "px";
+               newImg.classList.add('ingredient');
+               newImg.classList.add(type);
+               document.querySelector('.pizza-item.active').appendChild(newImg);
+           }
+           if(target.classList.contains("minus")){
+               target.previousElementSibling.value--;
+
+           }
+       }
     }
+
     document.querySelector('.orders').addEventListener('click',clickActionHandler);
 };
 
