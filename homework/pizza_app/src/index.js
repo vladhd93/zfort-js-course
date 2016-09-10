@@ -1,4 +1,5 @@
 function PizzaBuilder(pizzaList) {
+    this.dataObj = null;
     this.data = null;
     this.pizzaList = document.querySelector(pizzaList);
 }
@@ -7,8 +8,9 @@ PizzaBuilder.prototype.renderSidebar = function (list, data) {
     var _self = this;
     this.list = document.querySelector(list);
     function renderSidebar(SelectedList, parsedData) {
-        var dataObj = parsedData['data'];
-        for (var i = 1; i < dataObj.length; i++) {
+        this.dataObj = parsedData['data'];
+        var dataObj = this.dataObj;
+        for (var i = 1; i < this.dataObj.length; i++) {
             var template = `
             <li data-name="${dataObj[i].name}" data-price="${dataObj[i].price}"><img src="${dataObj[i].src}">
             </li>`;
@@ -28,6 +30,7 @@ PizzaBuilder.prototype.renderSidebar = function (list, data) {
 };
 
 function Table(addBtn, basket, itemCount, numBtn, ingrList, totalCell, pizzaList, pizzaListItem) {
+    PizzaBuilder.apply(this, arguments);
     this.addBtn = document.querySelector(addBtn);
     this.basket = document.querySelector(basket);
     this.itemCount = document.querySelector(itemCount);
@@ -60,34 +63,34 @@ Table.prototype.renderRow = function () {
                                <button class="select-num">${_self.currentIndex}</button>
                                </td>
                                <td class="ingredients">
-            <div class="ingredients-item salami" data-type="salami">
+            <div class="ingredients-item salami" data-type="salami" data-price="3">
               <span class="name">Salami <img src="images/salami.svg" alt=""></span>
               <button class="plus">+</button>
-              <input type='number' class="input">
+              <input type='number' min="0" class="input">
               <button class="minus">-</button>
             </div>
-            <div class="ingredients-item tomato" data-type="tomato">
+            <div class="ingredients-item tomato" data-type="tomato" data-price="2">
               <span class="name">tomato <img src="images/tomato.svg" alt=""></span>
               <button class="plus">+</button>
-              <input type='number' class="input">
+              <input type='number' min="0" class="input">
               <button class="minus">-</button>
             </div>
-            <div class="ingredients-item bacon" data-type="bacon">
+            <div class="ingredients-item bacon" data-type="bacon" data-price="4">
               <span class="name">bacon <img src="images/bacon.svg" alt=""></span>
               <button class="plus">+</button>
               <input type='number' class="input">
               <button class="minus">-</button>
             </div>
-            <div class="ingredients-item cheeze" data-type="cheeze">
+            <div class="ingredients-item cheeze" data-type="cheeze" data-price="3">
               <span class="name">cheeze <img src="images/cheeze.svg" alt=""></span>
               <button class="plus">+</button>
-              <input type='number' class="input">
+              <input type='number' min="0" class="input">
               <button class="minus">-</button>
             </div>
-            <div class="ingredients-item green" data-type="green">
+            <div class="ingredients-item green" data-type="green" data-price="1">
               <span class="name">green <img src="images/green.svg" alt=""></span>
               <button class="plus">+</button>
-              <input type='number' class="input">
+              <input type='number' min="0" class="input">
               <button class="minus">-</button>
             </div>
           </td>
@@ -110,11 +113,10 @@ Table.prototype.renderRow = function () {
             _self.updateItemCount();
             _self.setCurrentItem();
             _self.sumPrice('.total', '.sum-price');
-
         };
     }
-    _self.addBtn.addEventListener("click", renderRowHandler());
 
+    _self.addBtn.addEventListener("click", renderRowHandler());
 };
 
 Table.prototype.removeItem = function () {
@@ -132,12 +134,13 @@ Table.prototype.removeItem = function () {
             _self.checkCurrentIndex();
             _self.updateItemCount();
             _self.setCurrentItem();
-            if(removeRow.classList.contains('selected')){
+            if (removeRow.classList.contains('selected')) {
                 _self.basket.children[parseInt(currentIndex) - 1].classList.add('selected');
             }
             _self.sumPrice('.total', '.sum-price');
         }
     }
+
     document.querySelector('body').addEventListener('click', removeSelfHandler);
 };
 
@@ -177,8 +180,6 @@ Table.prototype.sumPrice = function (sumArr, cell) {
     displaySumCell.innerHTML = sum;
 };
 
-
-
 Table.prototype.updateItemCost = function () {
     var _self = this;
 
@@ -186,7 +187,14 @@ Table.prototype.updateItemCost = function () {
         function getRandom(min, max) {
             return Math.round(Math.random() * (max - min) + min);
         }
+
         var target = event.target;
+        if (target.tagName == 'UL') {
+            return;
+        }
+        if(target.closest('li')) {
+            var targetLI = target.parentNode.dataset.name;
+        }
         if (target.tagName == 'IMG') {
             var src = target.getAttribute('src');
             var newImg = document.createElement('img');
@@ -194,9 +202,10 @@ Table.prototype.updateItemCost = function () {
             newImg.style.top = getRandom(25, 240) + "px";
             newImg.style.left = getRandom(25, 240) + "px";
             newImg.classList.add('ingredient');
+            newImg.classList.add(targetLI);
             document.querySelector('.pizza-item.active').appendChild(newImg);
             var name = target.parentNode.dataset.name;
-            var input = document.querySelector('.selected .ingredients-item'+'.'+name+' .input');
+            var input = document.querySelector('.selected .ingredients-item' + '.' + name + ' .input');
             input.value++;
         }
         var li = target.closest('li');
@@ -234,7 +243,7 @@ Table.prototype.updateItemCount = function () {
 };
 
 
-Table.prototype.setActiveFirst = function (pizza,row) {
+Table.prototype.setActiveFirst = function (pizza, row) {
     var pizzaActive = document.querySelectorAll(pizza),
         rowActive = document.querySelectorAll(row);
     pizzaActive[0].classList.add('active');
@@ -242,53 +251,112 @@ Table.prototype.setActiveFirst = function (pizza,row) {
 };
 
 Table.prototype.ingradientsOptions = function () {
-    //var salamiItem = {
-    //    plus:document.querySelector('.ingredients-item.salami .plus'),
-    //    minus: document.querySelector('.ingredients-item.salami .minus'),
-    //    input: document.querySelector('.ingredients-item.salami input')
-    //};
-    //  var itemsArr = [];
-    //  var salamiItem = document.querySelector(".ingredients-item.salami"),
-    //      salamiItemInput = document.querySelector(".ingredients-item.salami .input"),
-    //      tomatoItem = document.querySelector(".ingredients-item.tomato"),
-    //      tomatoItemInput = document.querySelector(".ingredients-item.tomato .input"),
-    //      baconItem = document.querySelector(".ingredients-item.bacon"),
-    //      baconItemInput = document.querySelector(".ingredients-item.bacon .input"),
-    //      cheezeItem = document.querySelector(".ingredients-item.cheeze"),
-    //      cheezeItemInput = document.querySelector(".ingredients-item.cheeze .input"),
-    //      greenItem = document.querySelector(".ingredients-item.green"),
-    //      greenItemInput = document.querySelector(".ingredients-item.green .input");
+    var _self = this;
 
-    function clickActionHandler(event){
+    function clickActionHandler(event) {
         function getRandom(min, max) {
             return Math.round(Math.random() * (max - min) + min);
         }
-        var target = event.target;
-       if(target.closest('.selected')){
-           if(target.classList.contains("plus")){
-               target.nextElementSibling.value++;
-               var type = target.closest('.ingredients-item').dataset.type;
-               var newImg = document.createElement('img');
-               newImg.src ='images/'+type+'.svg';
-               newImg.style.top = getRandom(25, 240) + "px";
-               newImg.style.left = getRandom(25, 240) + "px";
-               newImg.classList.add('ingredient');
-               newImg.classList.add(type);
-               document.querySelector('.pizza-item.active').appendChild(newImg);
-           }
-           if(target.classList.contains("minus")){
-               target.previousElementSibling.value--;
 
-           }
-       }
+        var target = event.target;
+        if (target.closest('.selected')) {
+            var type = target.closest('.ingredients-item').dataset.type;
+            var price = parseInt(target.closest('.ingredients-item').dataset.price),
+                currentPrice = target.closest('.ingredients-item .total'),
+                sumPrice = document.querySelector('.sum-price');
+            var elementTotalPrice = document.querySelector('.orders .selected .total');
+            if (target.classList.contains("plus")) {
+                target.nextElementSibling.value++;
+                var newImg = document.createElement('img');
+                newImg.src = 'images/' + type + '.svg';
+                newImg.style.top = getRandom(25, 240) + "px";
+                newImg.style.left = getRandom(25, 240) + "px";
+                newImg.classList.add('ingredient');
+                newImg.classList.add(type);
+                document.querySelector('.pizza-item.active').appendChild(newImg);
+                elementTotalPrice.dataset.price = price + parseInt(elementTotalPrice.dataset.price);
+                sumPrice.dataset.price = parseInt(sumPrice.dataset.price) +  price;
+                sumPrice.innerHTML = sumPrice.dataset.price;
+                elementTotalPrice.innerHTML = elementTotalPrice.dataset.price;
+            }
+
+            if (target.classList.contains("minus")) {
+                if (target.previousElementSibling.value == 0) {
+                    return;
+                }
+
+                target.previousElementSibling.value--;
+                var removed = document.querySelectorAll(`.pizza-item.active .ingredient.${type}`);
+                document.querySelector('.pizza-item.active').removeChild(removed[removed.length - 1]);
+                elementTotalPrice.dataset.price = parseInt(elementTotalPrice.dataset.price) - price;
+                sumPrice.dataset.price = parseInt(sumPrice.dataset.price) -  price;
+                sumPrice.innerHTML = sumPrice.dataset.price;
+                elementTotalPrice.innerHTML = elementTotalPrice.dataset.price;
+            }
+
+            if (target.classList.contains("input")) {
+                console.log(1);
+            }
+        }
     }
 
-    document.querySelector('.orders').addEventListener('click',clickActionHandler);
+    var timeout = null;
+
+    function inputActionHandler(event) {
+        function getRandom(min, max) {
+            return Math.round(Math.random() * (max - min) + min);
+        }
+
+        var target = event.target;
+        if (target.closest('.selected')) {
+            var _self = this;
+            if (timeout !== null) {
+                clearTimeout(timeout);
+            }
+            timeout = setTimeout(function () {
+                var type = target.closest('.ingredients-item').dataset.type,
+                    price = parseInt(target.closest('.ingredients-item').dataset.price),
+                    elementTotalPrice = document.querySelector('.orders .selected .total'),
+                    sumPrice = document.querySelector('.sum-price');
+                if (target.classList.contains("input")) {
+                    var timeoutValue = target.value;
+
+                    function removeElement(element) {
+                        element && element.parentNode && element.parentNode.removeChild(element);
+                    }
+
+                    var removeArr = document.querySelectorAll('.pizza-item.active .ingredient' + '.' + type);
+                    for (var h = 0; h < removeArr.length; h++) {
+                        removeElement(removeArr[h]);
+                    }
+
+                    elementTotalPrice.dataset.price =parseInt(elementTotalPrice.dataset.price) -  price*removeArr.length;
+                    sumPrice.dataset.price =parseInt(sumPrice.dataset.price) -  price*removeArr.length;
+                    for (var k = 0; k < timeoutValue; k++) {
+                        var newImg = document.createElement('img');
+                        newImg.src = 'images/' + type + '.svg';
+                        newImg.style.top = getRandom(25, 240) + "px";
+                        newImg.style.left = getRandom(25, 240) + "px";
+                        newImg.classList.add('ingredient');
+                        newImg.classList.add(type);
+                        document.querySelector('.pizza-item.active').appendChild(newImg);
+                        elementTotalPrice.dataset.price = price + parseInt(elementTotalPrice.dataset.price);
+                        elementTotalPrice.innerHTML = elementTotalPrice.dataset.price;
+                        sumPrice.dataset.price = parseInt(sumPrice.dataset.price) +  price;
+                        sumPrice.innerHTML = sumPrice.dataset.price;
+                    }
+                }
+            }, 800);
+        }
+    }
+
+    document.querySelector('.orders').addEventListener('click', clickActionHandler);
+    document.querySelector('.orders').addEventListener('input', inputActionHandler);
 };
 
 var table = new Table('.add-pizza', '.basket tbody', '.num', '.select-num', '.ingredients-list', '.total', '.list', '.pizza-item');
 table.checkCurrentIndex();
-table.setActiveFirst('.pizza-item','.orders tr');
+table.setActiveFirst('.pizza-item', '.orders tr');
 table.renderRow();
 table.removeItem();
 table.updateItemCount();
@@ -296,7 +364,6 @@ table.updateItemCost();
 table.setCurrentItem();
 table.sumPrice('.total', '.sum-price');
 table.ingradientsOptions();
-
 var pizzaBuilder = new PizzaBuilder();
 pizzaBuilder.renderSidebar('.ingredients-list', 'public/config.json');
 
